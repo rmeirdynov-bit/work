@@ -1,5 +1,6 @@
 import { Building } from "./building.js";
 import { FLOORS, SLOTS, STATS, slotState, roomStatus } from "./data.js";
+import { NOTES } from "./notes.js";
 
 const $ = s => document.querySelector(s);
 const stage = $("#stage");
@@ -158,6 +159,7 @@ function go(i, fromUser = true){
   $("#cur").textContent = String(i + 1).padStart(2, "0");
   $("#progress").style.width = ((i + 1) / slides.length * 100) + "%";
   try { history.replaceState(null, "", location.href.split("#")[0] + "#" + (i + 1)); } catch (e) {}
+  updateTools();
   scheduleAuto();
 }
 const next = () => go(cur + 1);
@@ -185,17 +187,79 @@ function toggleAuto(){
   scheduleAuto();
 }
 
+/* ---------- инструменты докладчика ---------- */
+const tools = $("#tools"), notesEl = $("#notes"), gridEl = $("#grid-ov"), blackEl = $("#blackout"), helpEl = $("#help");
+const titles = slides.map(s => s.dataset.title);
+
+$("#g-list").innerHTML = titles.map((t, i) =>
+  `<button data-i="${i}"><i>${String(i + 1).padStart(2, "0")}</i><b>${t}</b></button>`).join("");
+$("#g-list").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  gridEl.hidden = true; go(+b.dataset.i);
+});
+
+function updateTools(){
+  $("#t-num").textContent = `${cur + 1} / ${slides.length}`;
+  const n = NOTES[cur] || { say: "", q: null };
+  $("#n-title").textContent = `${String(cur + 1).padStart(2, "0")} · ${titles[cur]}`;
+  $("#n-say").textContent = n.say;
+  $("#n-q").textContent = n.q || "";
+  gridEl.querySelectorAll("button").forEach((b, k) => b.classList.toggle("cur", k === cur));
+  tools.querySelector('[data-act="notes"]').classList.toggle("on", !notesEl.hidden);
+  tools.querySelector('[data-act="auto"]').classList.toggle("on", auto);
+  tools.querySelector('[data-act="black"]').classList.toggle("on", !blackEl.hidden);
+}
+
+// таймер выступления
+let t0 = null, tAcc = 0, tInt = null;
+function renderTime(){
+  const ms = tAcc + (t0 ? Date.now() - t0 : 0), sec = Math.floor(ms / 1000);
+  $("#t-time").textContent = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+}
+function toggleTimer(){
+  const btn = tools.querySelector('[data-act="timer"]');
+  if (t0){ tAcc += Date.now() - t0; t0 = null; clearInterval(tInt); btn.classList.remove("run"); }
+  else { t0 = Date.now(); tInt = setInterval(renderTime, 500); btn.classList.add("run"); }
+  renderTime();
+}
+function resetTimer(){ tAcc = 0; if (t0) t0 = Date.now(); renderTime(); }
+
+const toggle = el => { el.hidden = !el.hidden; updateTools(); };
+const ACT = {
+  prev: () => prev(), next: () => next(),
+  grid: () => toggle(gridEl), notes: () => toggle(notesEl), help: () => toggle(helpEl),
+  black: () => toggle(blackEl), auto: () => { toggleAuto(); updateTools(); },
+  timer: toggleTimer, fs: () => toggleFs(),
+};
+tools.addEventListener("click", e => { const b = e.target.closest("button[data-act]"); if (b){ b.blur(); ACT[b.dataset.act](); } });
+$("#fs-btn").addEventListener("click", e => { e.currentTarget.blur(); toggleFs(); });
+blackEl.addEventListener("click", () => toggle(blackEl));
+
+// курсор и панель прячутся через 3 секунды без движения
+let idleT = null, first = true;
+function wake(){
+  document.body.classList.remove("idle");
+  clearTimeout(idleT);
+  idleT = setTimeout(() => document.body.classList.add("idle"), first ? 6000 : 3000); first = false;
+}
+["mousemove", "mousedown", "touchstart"].forEach(ev => addEventListener(ev, wake, { passive:true }));
+wake();
+
 /* ---------- ввод ---------- */
+const KEYS = { f:"fs", "а":"fs", a:"auto", "ф":"auto", n:"notes", "т":"notes", g:"grid", "п":"grid",
+  b:"black", "и":"black", t:"timer", "е":"timer", h:"help", "р":"help", "?":"help" };
 addEventListener("keydown", e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
-  const k = e.key;
+  const k = e.key, kl = k.toLowerCase();
+  if (k === "Escape"){ gridEl.hidden = helpEl.hidden = blackEl.hidden = true; updateTools(); return; }
+  if (!blackEl.hidden && !["b","и"].includes(kl)){ blackEl.hidden = true; updateTools(); }
   if (["ArrowRight","ArrowDown","PageDown"," ","Enter"].includes(k)){ e.preventDefault(); next(); }
   else if (["ArrowLeft","ArrowUp","PageUp","Backspace"].includes(k)){ e.preventDefault(); prev(); }
   else if (k === "Home") go(0);
   else if (k === "End") go(slides.length - 1);
-  else if (k === "f" || k === "F" || k === "а" || k === "А") toggleFs();
-  else if (k === "a" || k === "A" || k === "ф" || k === "Ф") toggleAuto();
-  else if (k === "h" || k === "H" || k === "р" || k === "Р" || k === "?") $("#help").hidden = !$("#help").hidden;
+  else if (/^[0-9]$/.test(k)) go(k === "0" ? 9 : +k - 1);
+  else if (kl === "r" || kl === "к") resetTimer();
+  else if (KEYS[kl]) ACT[KEYS[kl]]();
 });
 $("#next").addEventListener("click", next);
 $("#prev").addEventListener("click", prev);
@@ -213,6 +277,7 @@ function toggleFs(){
   if (document.fullscreenElement) document.exitFullscreen();
   else document.documentElement.requestFullscreen && document.documentElement.requestFullscreen().catch(() => {});
 }
+document.addEventListener("fullscreenchange", () => document.body.classList.toggle("fs", !!document.fullscreenElement));
 
 /* ---------- старт ---------- */
 const fromHash = () => { const n = parseInt(location.hash.slice(1), 10); return Number.isFinite(n) ? n - 1 : 0; };

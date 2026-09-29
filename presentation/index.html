@@ -231,12 +231,50 @@
 </div>
 </div>
 
+<!-- Инструменты докладчика (вне сцены — не масштабируются) -->
+<button class="fs-btn" id="fs-btn" aria-label="Открыть на весь экран">
+  <svg class="i-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+  <svg class="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+  <span>На весь экран</span>
+</button>
+
+<nav class="tools" id="tools" aria-label="Инструменты докладчика">
+  <button data-act="prev" title="Назад (←)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+  <span class="t-num" id="t-num">1 / 12</span>
+  <button data-act="next" title="Вперёд (→)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+  <i class="sep"></i>
+  <button data-act="grid" title="Все слайды (G)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Слайды</span></button>
+  <button data-act="notes" title="Речь докладчика (N)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 10h16M4 15h10M4 20h7"/></svg><span>Речь</span></button>
+  <button data-act="auto" title="Автопоказ (A)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5"/></svg><span>Авто</span></button>
+  <button data-act="black" title="Чёрный экран (B)"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="5" width="18" height="14" rx="2"/></svg><span>Пауза</span></button>
+  <button data-act="timer" title="Таймер (T), сброс (R)" class="timer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/></svg><span id="t-time">00:00</span></button>
+  <button data-act="fs" title="Полный экран (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button data-act="help" title="Клавиши (?)">?</button>
+</nav>
+
+<aside class="notes" id="notes" hidden>
+  <div class="n-head"><b id="n-title"></b><span>Речь докладчика · N — скрыть</span></div>
+  <p class="n-say" id="n-say"></p>
+  <p class="n-q" id="n-q"></p>
+</aside>
+
+<div class="grid-ov" id="grid-ov" hidden>
+  <div class="g-head"><b>Все слайды</b><span>нажмите на слайд · G или Esc — закрыть</span></div>
+  <div class="g-list" id="g-list"></div>
+</div>
+
+<div class="blackout" id="blackout" hidden></div>
+
 <div class="help" id="help" hidden>
-  <b>Управление</b>
-  <span><kbd>←</kbd><kbd>→</kbd> / <kbd>Пробел</kbd> — слайды</span>
-  <span><kbd>F</kbd> — полный экран</span>
-  <span><kbd>A</kbd> — автопоказ по кругу</span>
-  <span><kbd>H</kbd> — эта подсказка</span>
+  <b>Клавиши</b>
+  <span><kbd>→</kbd> <kbd>Пробел</kbd> — вперёд · <kbd>←</kbd> — назад</span>
+  <span><kbd>1</kbd>…<kbd>9</kbd> <kbd>0</kbd> — к слайду</span>
+  <span><kbd>F</kbd> — весь экран</span>
+  <span><kbd>N</kbd> — речь</span>
+  <span><kbd>G</kbd> — все слайды</span>
+  <span><kbd>A</kbd> — автопоказ</span>
+  <span><kbd>B</kbd> — чёрный экран</span>
+  <span><kbd>T</kbd>/<kbd>R</kbd> — таймер</span>
 </div>
 
 <script src="app.js"></script>
