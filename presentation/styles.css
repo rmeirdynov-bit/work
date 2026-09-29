@@ -47,6 +47,7 @@ body{font-family:var(--text); -webkit-font-smoothing:antialiased}
 
 .shade{pointer-events:none; transition:background 1s var(--ease), opacity 1s var(--ease)}
 .shade[data-s="hero"]{background:
+  radial-gradient(900px 620px at 100% 100%, rgba(12,8,9,.78), rgba(12,8,9,0) 70%),
   linear-gradient(90deg, rgba(12,8,9,.92) 0%, rgba(12,8,9,.55) 42%, rgba(12,8,9,0) 70%),
   linear-gradient(0deg, rgba(12,8,9,.85) 0%, rgba(12,8,9,0) 35%)}
 .shade[data-s="left"]{background:linear-gradient(90deg, rgba(12,8,9,.94) 0%, rgba(12,8,9,.78) 40%, rgba(12,8,9,.15) 75%)}
@@ -112,12 +113,13 @@ h2{font-size:84px; line-height:1.04}
 .s-hero{display:flex; align-items:flex-end; padding-bottom:180px}
 .hero-copy h1{margin-top:6px; text-shadow:0 10px 60px rgba(0,0,0,.45)}
 .hero-copy .lead{font-size:54px; color:#fff; font-weight:500; margin-top:44px}
-.qr-card{position:absolute; right:96px; bottom:180px; display:flex; align-items:center; gap:26px; padding:22px 34px 22px 22px;
-  border-radius:28px; background:var(--glass); border:1px solid var(--line); backdrop-filter:blur(14px)}
+.qr-card{position:absolute; right:96px; bottom:180px; display:flex; align-items:center; gap:28px; padding:22px 38px 22px 22px;
+  border-radius:28px; background:rgba(16,10,12,.9); border:1.5px solid rgba(255,42,61,.55);
+  box-shadow:0 30px 80px -24px rgba(0,0,0,.8), 0 0 0 6px rgba(255,42,61,.12); backdrop-filter:blur(16px)}
 .qr-card img{width:168px; height:168px; border-radius:14px; display:block}
-.qr-card b{display:block; font-family:var(--display); font-size:30px; margin-bottom:8px}
+.qr-card b{display:block; font-family:var(--display); font-size:29px; margin-bottom:10px; color:#fff}
 .qr-card b{white-space:nowrap}
-.qr-card span{font-size:22px; color:var(--ink-3); display:block; max-width:240px}
+.qr-card span{font-size:23px; color:var(--ink-2); display:block; line-height:1.35}
 
 /* 2. проблема */
 .pains{list-style:none; margin:56px 0 0; padding:0; display:grid; gap:22px}
