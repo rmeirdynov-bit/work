@@ -157,7 +157,7 @@ function go(i, fromUser = true){
 
   $("#cur").textContent = String(i + 1).padStart(2, "0");
   $("#progress").style.width = ((i + 1) / slides.length * 100) + "%";
-  history.replaceState(null, "", location.pathname + location.search + "#" + (i + 1));
+  try { history.replaceState(null, "", location.href.split("#")[0] + "#" + (i + 1)); } catch (e) {}
   scheduleAuto();
 }
 const next = () => go(cur + 1);
