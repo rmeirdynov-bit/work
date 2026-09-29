@@ -13,7 +13,7 @@ try { building = new Building($("#gl")); } catch (e) { console.warn("WebGL не�
 
 function fit(){
   const s = Math.min(innerWidth / 1920, innerHeight / 1080);
-  stage.style.transform = `scale(${s})`;
+  stage.style.transform = `translate(-50%, -50%) scale(${s})`;
   building && building.resize(s);
 }
 addEventListener("resize", fit);
@@ -157,7 +157,7 @@ function go(i, fromUser = true){
 
   $("#cur").textContent = String(i + 1).padStart(2, "0");
   $("#progress").style.width = ((i + 1) / slides.length * 100) + "%";
-  history.replaceState(null, "", "#" + (i + 1));
+  history.replaceState(null, "", location.pathname + location.search + "#" + (i + 1));
   scheduleAuto();
 }
 const next = () => go(cur + 1);

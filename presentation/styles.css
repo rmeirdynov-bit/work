@@ -32,9 +32,9 @@ body{font-family:var(--text); -webkit-font-smoothing:antialiased}
 [hidden]{display:none !important}
 
 /* ---------- сцена 1920×1080, масштабируется под экран ---------- */
-.viewport{position:fixed; inset:0; display:grid; place-items:center; background:#000}
-.stage{position:relative; width:1920px; height:1080px; flex:none; overflow:hidden;
-  transform-origin:center center; background:
+.viewport{position:fixed; inset:0; background:#000; overflow:hidden}
+.stage{position:absolute; left:50%; top:50%; width:1920px; height:1080px; overflow:hidden;
+  transform-origin:center center; transform:translate(-50%,-50%); background:
     radial-gradient(1200px 700px at 78% 40%, rgba(209,26,42,.22), transparent 70%),
     radial-gradient(900px 600px at 10% 100%, rgba(142,14,31,.25), transparent 70%), var(--bg)}
 .layer{position:absolute; inset:0; width:1920px; height:1080px}
