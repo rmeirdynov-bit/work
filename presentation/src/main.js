@@ -44,7 +44,11 @@ function countUp(){
 }
 
 const SCENES = {
-  explode(){ building.paintStatus(5); countUp(); },
+  explode(){
+    // сначала — реальный корпус, затем он растворяется и этажи раскрываются
+    building.setShot("shell"); building.paintStatus(5); countUp();
+    later(() => building.setShot("explode"), 1900);
+  },
   floor(){
     let slot = 0;
     const clock = $("#floor-clock");

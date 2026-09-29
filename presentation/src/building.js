@@ -3,6 +3,8 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { G, FLOORS, roomStatus } from "./data.js";
 
 const STAGE_W = 1920, STAGE_H = 1080;
@@ -23,12 +25,13 @@ export const COLORS = {
 /* Камера и раскладка для каждой сцены.
    pos/target — в координатах сцены, offset — сдвиг кадра вправо (доля ширины), gap — шаг этажей. */
 const SHOTS = {
-  building: { pos:[48, 28, 54],  target:[0, 4.5, 0],  offset:-0.25, gap:1.45, spin:0.10, focus:null },
+  shell:    { pos:[54, 25, 60],  target:[0, 4.2, 0],  offset:-0.2,  gap:1.45, spin:0.09, focus:null, shell:true, bloom:0.12 },
+  building: { pos:[54, 25, 60],  target:[0, 4.2, 0],  offset:-0.2,  gap:1.45, spin:0.10, focus:null, shell:true, bloom:0.12 },
   explode:  { pos:[46, 34, 52],  target:[0, 8.5, 0],  offset:-0.21, gap:2.9,  spin:0.07, focus:null },
   floor:    { pos:[0, 57, 33],   target:[0, 0, 1.4],  offset:-0.2,  gap:2.9,  spin:0,    focus:2 },
   book:     { pos:[4, 50, 30],   target:[1.5, 0, 1.2], offset:-0.2,  gap:2.9,  spin:0,    focus:2 },
   filter:   { pos:[0, 57, 33],   target:[0, 0, 1.4],  offset:-0.2,  gap:2.9,  spin:0,    focus:2 },
-  final:    { pos:[-44, 24, 48], target:[0, 4.5, 0],  offset:0.2,   gap:1.45, spin:0.12, focus:null },
+  final:    { pos:[-54, 23, 58], target:[0, 4.2, 0],  offset:0.19,  gap:1.45, spin:0.12, focus:null, shell:true, bloom:0.12 },
 };
 
 export class Building {
@@ -55,6 +58,8 @@ export class Building {
 
     this.root = new THREE.Group(); this.scene.add(this.root);
     this.build();
+    this.shell = null; this.shellFade = 0; this.shellMats = [];
+    this.loadShell("assets/meta-building.glb");
 
     // текущее и целевое состояние камеры/раскладки
     this.state = { pos:new THREE.Vector3(60, 40, 70), target:new THREE.Vector3(0, 5, 0), offset:-0.2, gap:1.45 };
@@ -141,6 +146,29 @@ export class Building {
     return sp;
   }
 
+  /* Реальный корпус (Blender → GLB): свет и тени запечены в текстуру, стекло отражает окружение. */
+  loadShell(url){
+    const env = new THREE.PMREMGenerator(this.renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    new GLTFLoader().load(url, gltf => {
+      const shell = gltf.scene;
+      shell.traverse(o => {
+        if (!o.isMesh) return;
+        const src = o.material;
+        let m;
+        if (/glass/i.test(src.name)) {
+          m = new THREE.MeshPhysicalMaterial({ color: 0x1b2d40, metalness: 0.35, roughness: 0.06,
+            envMap: env, envMapIntensity: 1.25, clearcoat: 1, transparent: true });
+        } else {
+          m = new THREE.MeshBasicMaterial({ map: src.map, transparent: true });
+        }
+        m.userData.base = 1;
+        o.material = m; this.shellMats.push(m);
+      });
+      shell.visible = false;
+      this.root.add(shell); this.shell = shell;
+    }, undefined, err => console.warn("Модель корпуса не загрузилась", err));
+  }
+
   resize(scale){
     const dpr = Math.min(2, (window.devicePixelRatio || 1) * scale);
     this.renderer.setPixelRatio(dpr);
@@ -154,7 +182,8 @@ export class Building {
     this.shot = name;
     const s = SHOTS[name];
     this.spinSpeed = s.spin;
-    this.floors.forEach(f => { f.fadeTarget = s.focus && f.n !== s.focus ? 0 : 1; });
+    this.floors.forEach(f => { f.fadeTarget = s.shell && this.shell ? 0 : s.focus && f.n !== s.focus ? 0 : 1; });
+    this.shellTarget = s.shell ? 1 : 0;
     this.rooms.forEach(o => { o.liftTarget = 0; if (o.label) o.labelTarget = s.focus ? 1 : 0; });
   }
 
@@ -195,6 +224,16 @@ export class Building {
     this.state.target.lerp(new THREE.Vector3(...s.target), k * 0.9);
     this.state.offset += (s.offset - this.state.offset) * k;
     this.state.gap += (s.gap - this.state.gap) * k;
+
+    // реальный корпус и сила свечения
+    const shellT = this.shell ? (this.shellTarget || 0) : 0;
+    if (this.shell && shellT && this.floors[0].fadeTarget){ this.floors.forEach(f => { f.fadeTarget = 0; }); }
+    this.shellFade += (shellT - this.shellFade) * k;
+    if (this.shell){
+      this.shell.visible = this.shellFade > 0.01;
+      this.shellMats.forEach(m => { m.opacity = this.shellFade; m.depthWrite = this.shellFade > 0.98; });
+    }
+    this.bloom.strength += ((s.bloom ?? 0.42) - this.bloom.strength) * k;
 
     this.spinAngle += this.spinSpeed * dt;
     const want = s.spin ? this.spinAngle : Math.round(this.spinAngle / (Math.PI * 2)) * Math.PI * 2;
