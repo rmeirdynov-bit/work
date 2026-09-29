@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>META Rooms</title>
+<meta name="description" content="META Rooms — бронирование аудиторий META University. Презентация для выставки инноваций 30 сентября.">
+<meta name="theme-color" content="#0c0809">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="viewport" id="viewport">
+<div class="stage" id="stage">
+
+  <!-- 3D-слой -->
+  <canvas id="gl" class="layer gl" aria-hidden="true"></canvas>
+
+  <!-- Видео-слой: сначала локальный файл (офлайн), затем CDN -->
+  <div class="layer videos" aria-hidden="true">
+    <video data-v="hero" muted loop playsinline preload="auto">
+      <source src="assets/video/meta-hero.mp4" type="video/mp4">
+      <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3IgKH2akcUN4pFd0MnH6W05PVZj/8260fb83-9227-4571-9ab7-98fd93591a6e.mp4" type="video/mp4">
+    </video>
+    <video data-v="problem" muted loop playsinline preload="auto">
+      <source src="assets/video/meta-problem.mp4" type="video/mp4">
+      <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3IgKH2akcUN4pFd0MnH6W05PVZj/ab08cfc8-01af-4406-a01f-8e46e231cb01.mp4" type="video/mp4">
+    </video>
+    <video data-v="hologram" muted playsinline preload="auto">
+      <source src="assets/video/meta-hologram.mp4" type="video/mp4">
+      <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3IgKH2akcUN4pFd0MnH6W05PVZj/ae1b433f-49c3-4d00-bf2a-11e0b2c79a9e.mp4" type="video/mp4">
+    </video>
+    <video data-v="phone" muted loop playsinline preload="auto">
+      <source src="assets/video/meta-phone.mp4" type="video/mp4">
+      <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3IgKH2akcUN4pFd0MnH6W05PVZj/f49209be-c0e2-4c3c-b603-4e56b842e509.mp4" type="video/mp4">
+    </video>
+    <video data-v="students" muted loop playsinline preload="auto">
+      <source src="assets/video/meta-students.mp4" type="video/mp4">
+      <source src="https://d2ol7oe51mr4n9.cloudfront.net/user_3IgKH2akcUN4pFd0MnH6W05PVZj/69e1aef6-b177-4734-955a-1a497221b8c4.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="layer shade" id="shade" aria-hidden="true"></div>
+
+  <!-- Постоянная шапка -->
+  <header class="chrome-top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>
+      </span>
+      <span class="brand-t"><b>META Rooms</b><small>META University</small></span>
+    </div>
+    <div class="event">Выставка инноваций · 30 сентября</div>
+  </header>
+
+  <!-- ===================== СЛАЙДЫ ===================== -->
+  <main class="slides" id="slides">
+
+    <!-- 1. Титул -->
+    <section class="slide s-hero" data-video="hero" data-shade="hero" data-title="Титул">
+      <div class="hero-copy">
+        <p class="eyebrow a" style="--d:0">Бронирование аудиторий META University</p>
+        <h1 class="a" style="--d:1">META<br><span class="red">Rooms</span></h1>
+        <p class="lead a" style="--d:2">Свободная аудитория —<br>за&nbsp;10&nbsp;секунд</p>
+      </div>
+      <aside class="qr-card a" style="--d:3">
+        <img src="assets/qr.svg" alt="QR-код на демо META Rooms">
+        <span><b>Попробуй сам</b>наведи камеру телефона</span>
+      </aside>
+    </section>
+
+    <!-- 2. Проблема -->
+    <section class="slide s-problem" data-video="problem" data-shade="left" data-title="Проблема">
+      <div class="col">
+        <p class="eyebrow a" style="--d:0">Проблема</p>
+        <h2 class="a" style="--d:1">Нужна аудитория.<br>Где свободно —<br><span class="red">непонятно.</span></h2>
+        <ul class="pains">
+          <li class="a" style="--d:2"><i>01</i>Ходишь по этажам и заглядываешь в каждую дверь</li>
+          <li class="a" style="--d:3"><i>02</i>Спрашиваешь на вахте — там тоже не знают</li>
+          <li class="a" style="--d:4"><i>03</i>Нашёл — а через 10 минут там начинается пара</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. Решение (голограмма) -->
+    <section class="slide s-solution" data-video="hologram" data-shade="bottom" data-title="Решение">
+      <div class="col bottom">
+        <p class="eyebrow a" style="--d:0">Решение</p>
+        <h2 class="a" style="--d:1">Весь корпус — <span class="red">в&nbsp;одном приложении</span></h2>
+        <p class="lead a" style="--d:2">Что свободно прямо сейчас и на неделю вперёд. Бронь в один клик.</p>
+      </div>
+    </section>
+
+    <!-- 4. Масштаб (3D, этажи раскрываются) -->
+    <section class="slide s-scale" data-scene="explode" data-shade="gl-left" data-title="Масштаб">
+      <div class="col">
+        <p class="eyebrow a" style="--d:0">Цифровой двойник корпуса</p>
+        <h2 class="a" style="--d:1">Каждый этаж.<br>Каждая <span class="red">дверь.</span></h2>
+        <div class="stats">
+          <div class="stat a" style="--d:2"><b data-count="floors">7</b><span>этажей</span></div>
+          <div class="stat a" style="--d:3"><b data-count="rooms">119</b><span>помещений</span></div>
+          <div class="stat a" style="--d:4"><b data-count="book">101</b><span>можно забронировать</span></div>
+          <div class="stat a" style="--d:5"><b data-count="slots">808</b><span>слотов каждый день</span></div>
+        </div>
+        <p class="note a" style="--d:6;margin-top:32px">Лекционные, компьютерные классы, лаборатории, переговорные, студии — 10&nbsp;типов помещений</p>
+      </div>
+    </section>
+
+    <!-- 5. Живой план этажа -->
+    <section class="slide s-floor" data-scene="floor" data-shade="gl-left" data-title="Живой план">
+      <div class="col">
+        <p class="eyebrow a" style="--d:0">Живой план этажа</p>
+        <h2 class="a" style="--d:1">Цвет — это <span class="red">статус</span></h2>
+        <div class="clock a" style="--d:2"><span>2 этаж · Лекционный блок</span><b id="floor-clock">08:30–09:50</b></div>
+        <ul class="legend">
+          <li class="a" style="--d:3"><i class="dot free"></i><b>Свободно</b></li>
+          <li class="a" style="--d:4"><i class="dot soon"></i><b>Свободно одну пару</b></li>
+          <li class="a" style="--d:5"><i class="dot busy"></i><b>Идёт занятие</b></li>
+          <li class="a" style="--d:6"><i class="dot mine"></i><b>Моя бронь</b></li>
+        </ul>
+        <p class="note a" style="--d:7">Геометрия — по плану эвакуации корпуса: коридор, лифты, лестницы, выходы</p>
+      </div>
+    </section>
+
+    <!-- 6. Как это работает -->
+    <section class="slide s-book" data-scene="book" data-shade="gl-left" data-title="Как это работает">
+      <div class="col">
+        <p class="eyebrow a" style="--d:0">Как это работает</p>
+        <h2 class="a" style="--d:1">Бронь —<br><span class="red">в&nbsp;три шага</span></h2>
+        <ol class="steps" id="steps">
+          <li class="a" style="--d:2"><i>1</i><div><b>Выбери день и этаж</b><span>Неделя вперёд, 7 этажей</span></div></li>
+          <li class="a" style="--d:3"><i>2</i><div><b>Нажми на аудиторию</b><span>Видно места, технику и свободные пары</span></div></li>
+          <li class="a" style="--d:4"><i>3</i><div><b>Забронируй пару</b><span>Один клик — и готово</span></div></li>
+        </ol>
+      </div>
+      <div class="toast" id="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <span id="toast-t"></span>
+      </div>
+    </section>
+
+    <!-- 7. Сетка времени -->
+    <section class="slide s-grid" data-shade="solid" data-title="Сетка времени">
+      <div class="grid-head">
+        <div>
+          <p class="eyebrow a" style="--d:0">Второй режим — сетка времени</p>
+          <h2 class="a" style="--d:1">Все окна этажа —<br><span class="red">на&nbsp;одном экране</span></h2>
+        </div>
+        <p class="lead small a" style="--d:2">8 пар — с 08:30 до 20:50.<br>Зелёная клетка — бронь в&nbsp;один клик.</p>
+      </div>
+      <div class="tt a" style="--d:3" id="tt"></div>
+    </section>
+
+    <!-- 8. Фильтры и правила -->
+    <section class="slide s-filter" data-scene="filter" data-shade="gl-left" data-title="Фильтры">
+      <div class="col">
+        <p class="eyebrow a" style="--d:0">Умные фильтры</p>
+        <h2 class="a" style="--d:1">Только то,<br>что <span class="red">подходит</span></h2>
+        <div class="chips a" style="--d:2" id="chips">
+          <span data-f="free">Только свободные</span>
+          <span data-f="proj">С проектором</span>
+          <span data-f="big">От 30 мест</span>
+        </div>
+        <ul class="rules">
+          <li class="a" style="--d:3"><b>Одна бронь на пару</b>никто не займёт пять аудиторий сразу</li>
+          <li class="a" style="--d:4"><b>Отмена в один клик</b>аудитория сразу освобождается для других</li>
+          <li class="a" style="--d:5"><b>Служебные не бронируются</b>серверные, склады и архивы скрыты</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 9. С телефона -->
+    <section class="slide s-phone" data-video="phone" data-shade="right" data-title="С телефона">
+      <div class="col right">
+        <p class="eyebrow a" style="--d:0">Всегда под рукой</p>
+        <h2 class="a" style="--d:1">Прямо из <span class="red">коридора</span></h2>
+        <p class="lead a" style="--d:2">Веб-приложение: ничего не нужно устанавливать. Работает на телефоне, планшете и&nbsp;ноутбуке.</p>
+      </div>
+    </section>
+
+    <!-- 10. Для кого -->
+    <section class="slide s-who" data-video="students" data-shade="bottom-strong" data-title="Для кого">
+      <div class="who-head">
+        <p class="eyebrow a" style="--d:0">Для кого</p>
+        <h2 class="a" style="--d:1">Для всего <span class="red">университета</span></h2>
+      </div>
+      <div class="cards">
+        <article class="card a" style="--d:2"><i>Студентам</i><p>Место для проекта, подготовки к экзамену или встречи команды</p></article>
+        <article class="card a" style="--d:3"><i>Преподавателям</i><p>Аудитория для консультации, отработки или дополнительного занятия</p></article>
+        <article class="card a" style="--d:4"><i>Администрации</i><p>Прозрачная загрузка аудиторий и меньше конфликтов в расписании</p></article>
+      </div>
+    </section>
+
+    <!-- 11. Что дальше -->
+    <section class="slide s-road" data-scene="building" data-shade="gl-left" data-title="Что дальше">
+      <div class="col wide">
+        <p class="eyebrow a" style="--d:0">Что дальше</p>
+        <h2 class="a" style="--d:1">От концепта — <span class="red">к&nbsp;кампусу</span></h2>
+        <ol class="road">
+          <li class="now a" style="--d:2"><b>Сейчас</b><span>Рабочий концепт: план 7 этажей, сетка времени, бронь</span></li>
+          <li class="a" style="--d:3"><b>Platonus</b><span>Реальное расписание занятий — автоматически</span></li>
+          <li class="a" style="--d:4"><b>Студенческий ID</b><span>Вход по учётной записи университета</span></li>
+          <li class="a" style="--d:5"><b>QR на двери</b><span>Отметка «я на месте» прямо у двери аудитории</span></li>
+          <li class="a" style="--d:6"><b>Аналитика</b><span>Загрузка аудиторий для администрации</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 12. Финал -->
+    <section class="slide s-final" data-scene="final" data-shade="gl-right" data-title="Попробуй">
+      <div class="final-copy">
+        <p class="eyebrow a" style="--d:0">Попробуй прямо сейчас</p>
+        <h2 class="a" style="--d:1">Забронируй<br>аудиторию<br><span class="red">с&nbsp;телефона</span></h2>
+        <div class="final-qr a" style="--d:2">
+          <img src="assets/qr.svg" alt="QR-код на демо META Rooms">
+          <div><b>meta-rooms-web.vercel.app</b><span>Наведи камеру — откроется демо</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Нижняя панель -->
+  <footer class="chrome-bottom">
+    <div class="progress"><i id="progress"></i></div>
+    <div class="counter"><b id="cur">01</b><span>/</span><span id="total">12</span></div>
+    <div class="auto" id="auto-ind" aria-live="polite">Автопоказ</div>
+  </footer>
+
+  <button class="nav-zone prev" id="prev" aria-label="Предыдущий слайд"></button>
+  <button class="nav-zone next" id="next" aria-label="Следующий слайд"></button>
+</div>
+</div>
+
+<div class="help" id="help" hidden>
+  <b>Управление</b>
+  <span><kbd>←</kbd><kbd>→</kbd> / <kbd>Пробел</kbd> — слайды</span>
+  <span><kbd>F</kbd> — полный экран</span>
+  <span><kbd>A</kbd> — автопоказ по кругу</span>
+  <span><kbd>H</kbd> — эта подсказка</span>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
